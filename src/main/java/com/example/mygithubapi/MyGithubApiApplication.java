@@ -1,8 +1,8 @@
 package com.example.mygithubapi;
 
+import com.example.mygithubapi.repo.domain.service.RetrievingService;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetBranchesResponseDto;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetRepositoriesResponseDto;
-import com.example.mygithubapi.repo.domain.service.MyGithubService;
 import feign.FeignException;
 import feign.RetryableException;
 import lombok.extern.log4j.Log4j2;
@@ -19,10 +19,10 @@ import java.util.List;
 @Log4j2
 public class MyGithubApiApplication {
 
-    private final MyGithubService myGithubService;
+    private final RetrievingService retrievingService;
 
-    public MyGithubApiApplication(MyGithubService myGithubService) {
-        this.myGithubService = myGithubService;
+    public MyGithubApiApplication(RetrievingService retrievingService) {
+        this.retrievingService = retrievingService;
     }
 
     public static void main(String[] args) {
@@ -32,9 +32,9 @@ public class MyGithubApiApplication {
     @EventListener(ApplicationStartedEvent.class)
     public void run() {
         try {
-            List<GetRepositoriesResponseDto> responseRepos = myGithubService.fetchAllRepos("kalqa");
+            List<GetRepositoriesResponseDto> responseRepos = retrievingService.fetchAllRepos("kalqa");
             log.info(responseRepos);
-            List<GetBranchesResponseDto> responseBranches = myGithubService.fetchAllBranches("kalqa", "03-restemplate");
+            List<GetBranchesResponseDto> responseBranches = retrievingService.fetchAllBranches("kalqa", "03-restemplate");
             log.info(responseBranches);
         } catch (FeignException.FeignClientException feignException) {
             log.error("client exception: " + feignException.status());

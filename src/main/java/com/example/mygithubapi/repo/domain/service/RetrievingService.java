@@ -1,5 +1,6 @@
 package com.example.mygithubapi.repo.domain.service;
 
+
 import com.example.mygithubapi.repo.infastructure.controller.proxy.MyGithubProxy;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetBranchesResponseDto;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetRepositoriesResponseDto;
@@ -7,11 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
-public class MyGithubService {
+public class RetrievingService {
     private final MyGithubProxy myGithubProxy;
 
-    public MyGithubService(MyGithubProxy myGithubProxy) {
+    public RetrievingService(MyGithubProxy myGithubProxy) {
         this.myGithubProxy = myGithubProxy;
     }
 
@@ -29,4 +31,5 @@ public class MyGithubService {
     public List<GetBranchesResponseDto> getRepositoryBranches(String owner, String repo) {
         return myGithubProxy.fetchAllBranches(owner, repo);
     }
+
 }
