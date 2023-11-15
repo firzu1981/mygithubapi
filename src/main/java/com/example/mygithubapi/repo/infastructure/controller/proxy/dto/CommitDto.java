@@ -1,4 +1,4 @@
-package com.example.mygithubapi.getfromgithubclient.proxy.dto;
+package com.example.mygithubapi.repo.infastructure.controller.proxy.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

@@ -1,7 +1,7 @@
-package com.example.mygithubapi.getfromgithubclient.proxy;
+package com.example.mygithubapi.repo.infastructure.controller.proxy;
 
-import com.example.mygithubapi.getfromgithubclient.proxy.dto.GetBranchesResponseDto;
-import com.example.mygithubapi.getfromgithubclient.proxy.dto.GetRepositoriesResponseDto;
+import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetBranchesResponseDto;
+import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetRepositoriesResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;

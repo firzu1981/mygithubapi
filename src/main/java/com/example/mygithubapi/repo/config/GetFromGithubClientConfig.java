@@ -1,4 +1,4 @@
-package com.example.mygithubapi.getfromgithubclient.config;
+package com.example.mygithubapi.repo.config;
 
 import feign.codec.Decoder;
 import feign.jackson.JacksonDecoder;
