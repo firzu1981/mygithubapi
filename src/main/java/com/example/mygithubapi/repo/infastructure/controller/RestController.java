@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.*;
@@ -47,10 +48,11 @@ public class RestController {
     @GetMapping(value = "/branches/{owner}/{repo}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Branch>> getRepositoryBranches(
             @PathVariable String owner,
-            @PathVariable String repo
+            @PathVariable String repo,
+            @RequestHeader(name = "Accept", defaultValue = "application/json") String acceptHeader
     ) {
         List<GetBranchesResponseDto> branchDtos = retrievingService.getRepositoryBranches(owner, repo);
-        if (branchDtos == null || branchDtos.isEmpty()){
+        if (!acceptHeader.equals("application/json")){
             try {
                 throw new NotAcceptableException("Not acceptable media type");
             } catch (NotAcceptableException e) {

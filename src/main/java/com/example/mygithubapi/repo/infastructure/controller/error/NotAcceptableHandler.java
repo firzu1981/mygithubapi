@@ -17,9 +17,9 @@ public class NotAcceptableHandler {
     Logger logger = LoggerFactory.getLogger(MyGithubApiApplication.class);
     @ExceptionHandler(NotAcceptableException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ErrorResponseDto handleException(NotAcceptableException exception){
         logger.warn("Not acceptable header");
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND);
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 }
