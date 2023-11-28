@@ -5,18 +5,18 @@ import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetBranch
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetRepositoriesResponseDto;
 import feign.FeignException;
 import feign.RetryableException;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.event.EventListener;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @SpringBootApplication
 @EnableFeignClients
-@Log4j2
+
 public class MyGithubApiApplication {
 
     private final RetrievingService retrievingService;
@@ -31,13 +31,14 @@ public class MyGithubApiApplication {
 
     @EventListener(ApplicationStartedEvent.class)
     public void run() {
+        Logger logger = LoggerFactory.getLogger(MyGithubApiApplication.class);
         try {
             List<GetRepositoriesResponseDto> responseRepos = retrievingService.fetchAllRepos("kalqa");
-            log.info(responseRepos);
+            logger.info(responseRepos.toString());
             List<GetBranchesResponseDto> responseBranches = retrievingService.fetchAllBranches("kalqa", "03-restemplate");
-            log.info(responseBranches);
+            logger.info(responseBranches.toString());
         } catch (FeignException.FeignClientException feignException) {
-            log.error("client exception: " + feignException.status());
+            logger.error("client exception: " + feignException.status());
         } catch (FeignException.FeignServerException feignException) {
             System.out.println("server exception: " + feignException.status());
         } catch (RetryableException retryableException) {

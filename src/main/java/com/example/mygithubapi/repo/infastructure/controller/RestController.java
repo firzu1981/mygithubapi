@@ -1,44 +1,63 @@
 package com.example.mygithubapi.repo.infastructure.controller;
 
+import com.example.mygithubapi.repo.domain.model.Branch;
+import com.example.mygithubapi.repo.domain.model.NotAcceptableException;
+import com.example.mygithubapi.repo.domain.model.Repo;
 import com.example.mygithubapi.repo.domain.service.RetrievingService;
+import com.example.mygithubapi.repo.domain.model.UsernameNotFoundException;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetBranchesResponseDto;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetRepositoriesResponseDto;
-import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
+import java.util.*;
 
 
 @org.springframework.web.bind.annotation.RestController
-@Log4j2
 @RequestMapping("/api")
 public class RestController {
 
     private final RetrievingService retrievingService;
-    private final BranchMapper branchMapper;
     private final RepoMapper repoMapper;
+    private final BranchMapper branchMapper;
 
-    public RestController(RetrievingService retrievingService, BranchMapper branchMapper, RepoMapper repoMapper) {
+    public RestController(RetrievingService retrievingService, RepoMapper repoMapper, BranchMapper branchMapper) {
         this.retrievingService = retrievingService;
-        this.branchMapper = branchMapper;
         this.repoMapper = repoMapper;
+        this.branchMapper = branchMapper;
     }
 
-    @GetMapping("/repositories/{username}")
-    public ResponseEntity<List<GetRepositoriesResponseDto>> getUserRepositories(@PathVariable String username) {
-        List<GetRepositoriesResponseDto> repositories = retrievingService.getUserRepositories(username);
-        return ResponseEntity.ok(repositories);
+    @GetMapping(value = "/repositories/{username}" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Repo>> getUserRepositories(@PathVariable String username) {
+        List<GetRepositoriesResponseDto> responseDtos = retrievingService.fetchAllRepos(username);
+        if (responseDtos == null || responseDtos.isEmpty()) {
+            try {
+                throw new UsernameNotFoundException("Username not found");
+            } catch (UsernameNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        List<Repo> repos = repoMapper.mapToRepoList(responseDtos);
+        return ResponseEntity.ok(repos);
     }
 
-    @GetMapping("/branches/{owner}/{repo}")
-    public ResponseEntity<List<GetBranchesResponseDto>> getRepositoryBranches(
+    @GetMapping(value = "/branches/{owner}/{repo}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Branch>> getRepositoryBranches(
             @PathVariable String owner,
             @PathVariable String repo
     ) {
-        List<GetBranchesResponseDto> branches = retrievingService.getRepositoryBranches(owner, repo);
+        List<GetBranchesResponseDto> branchDtos = retrievingService.getRepositoryBranches(owner, repo);
+        if (branchDtos == null || branchDtos.isEmpty()){
+            try {
+                throw new NotAcceptableException("Not acceptable media type");
+            } catch (NotAcceptableException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        List<Branch> branches = branchMapper.mapToBranchList(branchDtos);
         return ResponseEntity.ok(branches);
     }
 }

@@ -2,16 +2,18 @@ package com.example.mygithubapi.repo.infastructure.controller;
 
 import com.example.mygithubapi.repo.domain.model.Repo;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetRepositoriesResponseDto;
-import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.OwnerDto;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapping;
 
-@Component
-public class RepoMapper {
-    public Repo mapFromGetRepositoriesResponseDtoToRepo(GetRepositoriesResponseDto dto) {
-        return new Repo(dto.name(), dto.owner().login());
-    }
+import java.util.List;
 
-    public static GetRepositoriesResponseDto mapFromRepoToGetRepositoriesResponseDto(Repo repo) {
-        return new GetRepositoriesResponseDto(repo.repoName(), new OwnerDto(repo.ownerLogin()));
-    }
+
+@org.mapstruct.Mapper
+public interface RepoMapper {
+
+    @Mapping(source = "name", target = "repoName")
+    @Mapping(source = "owner.login", target = "ownerLogin")
+    Repo mapGetRepoDtoToRepo(GetRepositoriesResponseDto getRepositoriesResponseDto);
+
+    List<Repo> mapToRepoList(List<GetRepositoriesResponseDto> dtos);
+
 }

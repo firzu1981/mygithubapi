@@ -1,18 +1,20 @@
 package com.example.mygithubapi.repo.infastructure.controller;
 
 import com.example.mygithubapi.repo.domain.model.Branch;
-import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.CommitDto;
 import com.example.mygithubapi.repo.infastructure.controller.proxy.dto.GetBranchesResponseDto;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class BranchMapper {
+import java.util.List;
 
-    public static Branch mapFromGetBranchesResponseDtoToBranch(GetBranchesResponseDto dto) {
-        return new Branch(dto.name(), dto.commit().sha());
-    }
 
-    public static GetBranchesResponseDto mapFromBranchToGetBranchesResponseDto(Branch branch) {
-        return new GetBranchesResponseDto(branch.branchName(), new CommitDto(branch.commitSha()));
-    }
+@Mapper
+public interface BranchMapper {
+
+    @Mapping(source = "name", target = "branchName")
+    @Mapping(source = "commit.sha", target = "commitSha")
+    Branch mapGetBranchDtoToBranch(GetBranchesResponseDto getBranchesResponseDto);
+
+    List<Branch> mapToBranchList(List<GetBranchesResponseDto> dtos);
+
 }
